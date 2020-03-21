@@ -51,7 +51,7 @@
             },
             checkInView() {
                 this.getRect()
-                return window && (this.rect.top < window.outerHeight && this.rect.bottom > 0) && (this.rect.left < window.innerWidth && this.rect.right > 0)
+                return window && (this.rect.top < window.outerHeight && this.rect.bottom > 0) && (this.rect.left < window.outerWidth && this.rect.right > 0)
             },
             load() {
                 if (this.checkInView()) {
