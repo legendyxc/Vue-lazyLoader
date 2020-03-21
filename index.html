@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+        .list {
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgb(83, 123, 255);
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="list">aaa</div>
+    <div class="list">bbb</div>
+    <div class="list">ccc</div>
+    <div class="list">ddd</div>
+    <div class="list">eee</div>
+    <lazy-loader v-for="item in items">
+        <div class="list">{{item}}</div>
+    </lazy-loader>
+</div>
+<script>
+    Vue.component('lazyLoader', {
+        data() {
+            return {
+                show: false,
+                rect: {},
+                events: ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend', 'touchmove']
+            }
+        }, render(h) {
+            if (this.show === false) {
+                return h('div')
+            }
+            return h('div', null, this.$slots.default)
+        }, mounted() {
+            this.load()
+            for (let type of this.events) {
+                window.addEventListener(type, this.load)
+            }
+        }, methods: {
+            getRect() {
+                this.rect = this.$el.getBoundingClientRect()
+            },
+            checkInView() {
+                this.getRect()
+                return window && (this.rect.top < window.outerHeight && this.rect.bottom > 0) && (this.rect.left < window.innerWidth && this.rect.right > 0)
+            },
+            load() {
+                if (this.checkInView()) {
+                    this.show = true
+                }
+                console.log(this.rect)
+            }
+        }
+    })
+
+    let items = []
+    for (let i = 0; i < 1000; i++) {
+        items.push(i)
+    }
+
+    new Vue({
+        el: '#app',
+        data: {
+            items: items
+        }
+    })
+</script>
+</body>
+</html>
